@@ -1,7 +1,8 @@
 package com.example.data.model
 
-import androidx.annotation.StringRes
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class News(
     val title: String,
     val summary: String?,
@@ -14,8 +15,28 @@ enum class NewsCategory(
     val parameter: String,
     val title: String,
 ) {
-    TECHNOLOGY(
+    INTERNATIONAL(
+        identity = 0,
+        parameter = "the-gioi",
+        title = "International",
+    ),
+    TRAVEL(
         identity = 1,
+        parameter = "du-lich",
+        title = "Travel",
+    ),
+    SPORTS(
+        identity = 2,
+        parameter = "the-thao",
+        title = "Sports",
+    ),
+    ENTERTAINMENT(
+        identity = 3,
+        parameter = "giai-tri",
+        title = "Entertainment",
+    ),
+    TECHNOLOGY(
+        identity = 4,
         parameter = "cong-nghe",
         title = "Technology",
     )

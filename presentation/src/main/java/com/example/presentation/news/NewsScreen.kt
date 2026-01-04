@@ -1,11 +1,13 @@
 package com.example.presentation.news
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -30,20 +32,35 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.data.model.News
 
 @Composable
-fun NewsScreen(viewModel: NewsViewModel) {
+fun NewsScreen(
+    viewModel: NewsViewModel,
+    onNewsSelected: (News) -> Unit,
+) {
     val uiState = viewModel.newsState.collectAsStateWithLifecycle()
-    NewsUI(state = uiState.value)
+    NewsUI(
+        modifier = Modifier.fillMaxSize(),
+        state = uiState.value,
+        onNewsSelected = onNewsSelected,
+    )
 }
 
 @Composable
-private fun NewsUI(state: NewsState) {
+private fun NewsUI(
+    modifier: Modifier = Modifier,
+    state: NewsState,
+    onNewsSelected: (News) -> Unit,
+) {
     when {
         state.isLoading -> CircularProgressIndicator()
         state.errorMessage != null -> {
             //Show error message
         }
 
-        else -> NewsList(news = state.news)
+        else -> NewsList(
+            modifier = modifier,
+            news = state.news,
+            onNewsSelected = onNewsSelected,
+        )
     }
 }
 
@@ -51,6 +68,7 @@ private fun NewsUI(state: NewsState) {
 private fun NewsList(
     modifier: Modifier = Modifier,
     news: List<News>,
+    onNewsSelected: (News) -> Unit,
 ) {
     LazyColumn(
         modifier = modifier,
@@ -58,13 +76,18 @@ private fun NewsList(
     ) {
         items(
             items = news, key = { it.url }) {
-            NewsItem(newItem = it)
+            NewsItem(
+                modifier = Modifier.clickable(
+                    onClick = { onNewsSelected(it) }
+                ),
+                newItem = it,
+            )
         }
     }
 }
 
 @Composable
-fun NewsItem(
+private fun NewsItem(
     modifier: Modifier = Modifier,
     newItem: News,
 ) {
