@@ -15,6 +15,6 @@ interface NewsDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertNewsEntities(newsEntities: List<NewsEntity>)
 
-    @Query("DELETE FROM news")
-    suspend fun clearNewsEntities()
+    @Query("DELETE FROM news WHERE categoryId = :categoryId")
+    suspend fun clearNewsEntitiesByCategory(categoryId: Int)
 }

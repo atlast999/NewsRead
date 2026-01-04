@@ -1,7 +1,5 @@
 package com.example.presentation.news
 
-import android.util.Log
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.data.model.News
@@ -14,15 +12,8 @@ import kotlinx.coroutines.flow.stateIn
 
 class NewsViewModel(
     private val category: NewsCategory,
-    savedStateHandle: SavedStateHandle,
     newsRepository: NewsRepository,
 ) : ViewModel() {
-
-    init {
-        savedStateHandle.keys().joinToString().let {
-            Log.d("HOANTAG", "savedStateHandle keys: $it")
-        }
-    }
     val newsState = newsRepository.getNewsByCategoryFlow(category = category)
         .filter { it.isNotEmpty() }
         .map {

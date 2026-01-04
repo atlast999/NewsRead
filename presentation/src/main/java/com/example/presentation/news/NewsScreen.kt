@@ -4,6 +4,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.CircularProgressIndicator
@@ -18,6 +19,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import coil3.compose.AsyncImage
 import com.example.data.model.News
 import com.example.presentation.R
 
@@ -98,8 +100,9 @@ private fun NewsItem(
     ListItem(
         modifier = modifier,
         leadingContent = {
-            Icon(
-                painter = painterResource(R.drawable.globe),
+            AsyncImage(
+                modifier = Modifier.size(width = 120.dp, height = 100.dp),
+                model = newItem.thumbnail,
                 contentDescription = null,
             )
         },
