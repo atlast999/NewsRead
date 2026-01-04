@@ -22,6 +22,7 @@ import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -31,12 +32,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.TransformOrigin
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.data.model.News
+import com.example.presentation.R
 
 @Composable
 fun NewsReadScreen(viewModel: NewsReadViewModel) {
@@ -65,8 +67,7 @@ private fun NewsReadUI(
         MediaDownloadFab(
             modifier = Modifier
                 .align(Alignment.BottomEnd)
-                .padding(16.dp)
-                .wrapContentSize(),
+                .padding(16.dp),
             medias = state.downloadableMedias,
             onDownloadMedia = onDownloadMedia,
         )
@@ -98,7 +99,6 @@ private fun NewsReadArea(
                         val url = request?.url.toString()
 
                         if (url.endsWith(".mp3") || url.endsWith(".m4a")) {
-                            // You found the audio URL
                             Log.d("HOANTAG", "Found audio URL: $url")
                             onMediaFileDetected.invoke(url)
                         }
@@ -153,7 +153,8 @@ private fun MediaDownloadFab(
                                     Text(
                                         text = media.url.substringAfterLast('/'),
                                         maxLines = 1,
-                                        overflow = TextOverflow.Ellipsis
+                                        overflow = TextOverflow.Ellipsis,
+                                        style = MaterialTheme.typography.labelMedium,
                                     )
                                 },
                                 modifier = Modifier.clickable {
@@ -170,10 +171,9 @@ private fun MediaDownloadFab(
         FloatingActionButton(
             onClick = { expanded.value = !expanded.value },
         ) {
-            Text(
-                text = "↓",
-                style = MaterialTheme.typography.displaySmall,
-                fontWeight = FontWeight.Black,
+            Icon(
+                painter = painterResource(R.drawable.download),
+                contentDescription = null,
             )
         }
     }

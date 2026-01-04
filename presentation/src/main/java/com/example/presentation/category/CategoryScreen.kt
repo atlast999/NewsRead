@@ -1,20 +1,21 @@
 package com.example.presentation.category
 
-import androidx.compose.foundation.background
+import androidx.annotation.DrawableRes
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Icon
+import androidx.compose.material3.ListItem
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.example.data.model.NewsCategory
+import com.example.presentation.R
 
 @Composable
 fun CategoryScreen(onCategorySelected: (NewsCategory) -> Unit) {
@@ -22,24 +23,38 @@ fun CategoryScreen(onCategorySelected: (NewsCategory) -> Unit) {
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
+        Text(
+            modifier = Modifier.padding(start = 16.dp),
+            text = "News Category",
+            style = MaterialTheme.typography.titleLarge,
+        )
         NewsCategory.entries.forEach { category ->
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 8.dp)
-                    .background(
-                        color = Color.Green,
-                        shape = RoundedCornerShape(8.dp)
+            ListItem(
+                modifier = Modifier.clickable(
+                    onClick = { onCategorySelected.invoke(category) }
+                ),
+                leadingContent = {
+                    Icon(
+                        painter = painterResource(category.getIcon()),
+                        contentDescription = null,
                     )
-                    .clickable(
-                        onClick = { onCategorySelected(category) }
+                },
+                headlineContent = {
+                    Text(
+                        text = category.title,
+                        style = MaterialTheme.typography.titleMedium,
                     )
-            ) {
-                Text(
-                    text = category.title,
-                    modifier = Modifier.padding(16.dp)
-                )
-            }
+                },
+            )
         }
     }
+}
+
+@DrawableRes
+private fun NewsCategory.getIcon() = when(this) {
+    NewsCategory.INTERNATIONAL -> R.drawable.globe
+    NewsCategory.TRAVEL -> R.drawable.travel
+    NewsCategory.SPORTS -> R.drawable.sports
+    NewsCategory.ENTERTAINMENT -> R.drawable.entertainment
+    NewsCategory.TECHNOLOGY -> R.drawable.desktop
 }
