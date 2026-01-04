@@ -16,8 +16,13 @@ class NewsViewModel(
 ) : ViewModel() {
     val newsState = newsRepository.getNewsByCategoryFlow(category = category)
         .filter { it.isNotEmpty() }
-        .map {
-            NewsState(isLoading = false, news = it)
+        .map { allNews ->
+            val (latest, relevant) = allNews.partition { news -> news.summary != null }
+            NewsState(
+                isLoading = false,
+                latestNews = latest,
+                relevantNews = relevant,
+            )
         }.stateIn(
             viewModelScope,
             started = SharingStarted.WhileSubscribed(5000),
@@ -27,6 +32,7 @@ class NewsViewModel(
 
 data class NewsState(
     val isLoading: Boolean = true,
-    val news: List<News> = emptyList(),
+    val latestNews: List<News> = emptyList(),
+    val relevantNews: List<News> = emptyList(),
     val errorMessage: String? = null,
 )
