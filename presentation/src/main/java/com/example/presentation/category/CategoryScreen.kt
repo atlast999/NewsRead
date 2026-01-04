@@ -10,9 +10,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
+import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
@@ -34,10 +37,17 @@ fun CategoryScreen(onCategorySelected: (NewsCategory) -> Unit) {
             color = MaterialTheme.colorScheme.onPrimaryContainer,
             style = MaterialTheme.typography.titleLarge,
         )
+        val selectedCategory = rememberSaveable {
+            mutableStateOf<NewsCategory?>(null)
+        }
         NewsCategory.entries.forEach { category ->
+            val isSelected = selectedCategory.value == category
             ListItem(
                 modifier = Modifier.clickable(
-                    onClick = { onCategorySelected.invoke(category) }
+                    onClick = {
+                        selectedCategory.value = category
+                        onCategorySelected.invoke(category)
+                    }
                 ),
                 leadingContent = {
                     Icon(
@@ -51,6 +61,10 @@ fun CategoryScreen(onCategorySelected: (NewsCategory) -> Unit) {
                         style = MaterialTheme.typography.titleMedium,
                     )
                 },
+                colors = ListItemDefaults.colors().copy(
+                    containerColor = if (isSelected) MaterialTheme.colorScheme.secondaryContainer else MaterialTheme.colorScheme.surface,
+                    headlineColor = if (isSelected) MaterialTheme.colorScheme.onSecondaryContainer else MaterialTheme.colorScheme.onSurface,
+                )
             )
         }
     }

@@ -1,8 +1,12 @@
 package com.example.presentation.navigation
 
+import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
+import androidx.compose.material3.adaptive.navigation3.ListDetailSceneStrategy
+import androidx.compose.material3.adaptive.navigation3.rememberListDetailSceneStrategy
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
+import androidx.navigation3.runtime.NavBackStack
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
@@ -28,12 +32,15 @@ data class NewsKey(val category: NewsCategory) : NavKey
 @Serializable
 data class ReadKey(val news: News) : NavKey
 
+@OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
 fun NavigationRoot(modifier: Modifier = Modifier) {
     val backStack = rememberNavBackStack(CategoryKey)
+    val listDetailStrategy = rememberListDetailSceneStrategy<NavKey>()
     NavDisplay(
         modifier = modifier,
         backStack = backStack,
+        sceneStrategy = listDetailStrategy,
         entryDecorators = listOf(
             // Add the default decorators for managing scenes and saving state
             rememberSaveableStateHolderNavEntryDecorator(),
@@ -41,12 +48,18 @@ fun NavigationRoot(modifier: Modifier = Modifier) {
             rememberViewModelStoreNavEntryDecorator()
         ),
         entryProvider = entryProvider {
-            entry<CategoryKey> {
-                CategoryScreen(onCategorySelected = {
-                    backStack.add(NewsKey(category = it))
-                })
+            entry<CategoryKey>(
+                metadata = ListDetailSceneStrategy.listPane(),
+            ) {
+                CategoryScreen(
+                    onCategorySelected = { category ->
+                        backStack.addSingleTop(NewsKey(category = category))
+                    },
+                )
             }
-            entry<NewsKey> { newsKey ->
+            entry<NewsKey>(
+                metadata = ListDetailSceneStrategy.detailPane()
+            ) { newsKey ->
                 val viewModel = koinViewModel<NewsViewModel> {
                     parametersOf(newsKey.category)
                 }
@@ -65,4 +78,9 @@ fun NavigationRoot(modifier: Modifier = Modifier) {
             }
         }
     )
+}
+
+private inline fun <reified T: NavKey> NavBackStack<NavKey>.addSingleTop(navKey: T) {
+    removeIf { it is T }
+    add(navKey)
 }

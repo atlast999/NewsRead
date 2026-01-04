@@ -4,6 +4,7 @@ import android.util.Log
 import com.example.data.datasource.database.dao.NewsDao
 import com.example.data.datasource.database.entity.NewsEntity
 import com.example.data.datasource.database.entity.asNews
+import com.example.data.datasource.downloader.FileDownloader
 import com.example.data.datasource.network.NewsNetworkDataSource
 import com.example.data.datasource.network.dto.NewsDto
 import com.example.data.model.News
@@ -23,30 +24,35 @@ class OfflineFirstNewsRepository(
     private val newsNetworkDataSource: NewsNetworkDataSource,
     private val applicationScope: CoroutineScope,
     private val ioDispatcher: CoroutineDispatcher,
+    private val fileDownloader: FileDownloader,
 ): NewsRepository {
 
     private var syncJob: Job? = null
+    private val syncedCategories = mutableSetOf<NewsCategory>()
 
     override fun getNewsByCategoryFlow(category: NewsCategory): Flow<List<News>> {
         return newsDao.getNewsByCategory(categoryId = category.identity).map { entities ->
             entities.map(NewsEntity::asNews)
         }.onStart {
-            Log.d("HOANTAG", "Start getting news -> Trigger sync")
             syncJob = syncNewsByCategory(category = category)
         }.onCompletion {
-            Log.d("HOANTAG", "Completed getting news -> Cancel sync")
             syncJob?.cancel()
-            syncJob = null
         }
     }
 
+    override suspend fun downloadNewsMedia(url: String) {
+        fileDownloader.downloadFile(url = url)
+    }
+
     private fun syncNewsByCategory(category: NewsCategory) = applicationScope.launch(ioDispatcher) {
-        Log.d("HOANTAG", "Start syncing news")
+        if (syncedCategories.contains(category)) return@launch
+        Log.d("HOANTAG", "Start syncing news for category: ${category.name}")
         val dtos = newsNetworkDataSource.fetchNewsByCategory(category = category).news
         val entities = dtos.map { it.asEntity(categoryId = category.identity) }
         newsDao.clearNewsEntitiesByCategory(categoryId = category.identity)
         newsDao.insertNewsEntities(newsEntities = entities)
-        Log.d("HOANTAG", "Finish syncing news")
+        Log.d("HOANTAG", "Finish syncing news for category: ${category.name}")
+        syncedCategories.add(category)
     }
 
     private fun NewsDto.asEntity(categoryId: Int) = NewsEntity(

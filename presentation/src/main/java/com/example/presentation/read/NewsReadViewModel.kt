@@ -26,7 +26,7 @@ class NewsReadViewModel(
     }
 
     fun downloadMedia(mediaUrl: MediaUrl) = viewModelScope.launch {
-
+        newsRepository.downloadNewsMedia(url = mediaUrl.url)
     }
 }
 

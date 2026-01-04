@@ -2,8 +2,6 @@ package com.example.presentation.read
 
 import android.util.Log
 import android.webkit.WebChromeClient
-import android.webkit.WebResourceRequest
-import android.webkit.WebResourceResponse
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.compose.animation.AnimatedVisibility
@@ -67,7 +65,7 @@ private fun NewsReadUI(
         MediaDownloadFab(
             modifier = Modifier
                 .align(Alignment.BottomEnd)
-                .padding(16.dp),
+                .padding(end = 16.dp),
             medias = state.downloadableMedias,
             onDownloadMedia = onDownloadMedia,
         )
@@ -91,19 +89,12 @@ private fun NewsReadArea(
                 }
                 webViewClient = object : WebViewClient() {
 
-                    override fun shouldInterceptRequest(
-                        view: WebView?,
-                        request: WebResourceRequest?
-                    ): WebResourceResponse? {
-
-                        val url = request?.url.toString()
-
+                    override fun onLoadResource(view: WebView?, url: String) {
+                        super.onLoadResource(view, url)
                         if (url.endsWith(".mp3") || url.endsWith(".m4a")) {
-                            Log.d("HOANTAG", "Found audio URL: $url")
+                            Log.d("HOANTAG", "Found resource URL: $url")
                             onMediaFileDetected.invoke(url)
                         }
-
-                        return super.shouldInterceptRequest(view, request)
                     }
                 }
                 webChromeClient = WebChromeClient()
@@ -111,6 +102,9 @@ private fun NewsReadArea(
         },
         update = { webView ->
             webView.loadUrl(news.url)
+        },
+        onRelease = { webView ->
+            webView.destroy()
         }
     )
 }

@@ -64,4 +64,5 @@ dependencies {
     implementation(libs.androidx.lifecycle.viewmodel.navigation3)
     implementation(libs.coil.compose)
     implementation(libs.coil.network.okhttp)
+    implementation("androidx.compose.material3.adaptive:adaptive-navigation3:1.3.0-alpha05")
 }

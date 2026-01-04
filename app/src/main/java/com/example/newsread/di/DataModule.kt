@@ -3,6 +3,8 @@ package com.example.newsread.di
 import com.example.data.datasource.database.NewsDatabase
 import com.example.data.datasource.database.dao.NewsDao
 import com.example.data.datasource.database.provideNewsDatabase
+import com.example.data.datasource.downloader.FileDownloader
+import com.example.data.datasource.downloader.impl.AndroidFileDownloader
 import com.example.data.datasource.network.NewsNetworkDataSource
 import com.example.data.datasource.network.ktor.KtorNetworkDataSource
 import com.example.data.datasource.network.ktor.provideKtorHttpClient
@@ -20,10 +22,12 @@ val dataModule = module {
     single<NewsDao> { get<NewsDatabase>().newsDao() }
     single<HttpClient> { provideKtorHttpClient() }
     singleOf(::KtorNetworkDataSource) { bind<NewsNetworkDataSource>() }
+    singleOf(::AndroidFileDownloader) { bind<FileDownloader>() }
     single<NewsRepository> { OfflineFirstNewsRepository(
         newsDao = get(),
         newsNetworkDataSource = get(),
         applicationScope = get(),
-        ioDispatcher = get(qualifier = AppDispatchers.IO.qualifier)
+        ioDispatcher = get(qualifier = AppDispatchers.IO.qualifier),
+        fileDownloader = get(),
     ) }
 }
