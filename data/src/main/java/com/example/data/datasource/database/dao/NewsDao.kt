@@ -20,7 +20,7 @@ interface NewsDao {
     suspend fun clearNewsEntitiesByCategory(categoryId: Int)
 
     @Query("SELECT * FROM news_summary WHERE url = :newsUrl")
-    suspend fun getNewsSummary(newsUrl: String): List<NewsSummaryEntity>
+    fun getSummaryByNews(newsUrl: String): Flow<NewsSummaryEntity?>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertNewsSummary(newsSummaryEntity: NewsSummaryEntity)

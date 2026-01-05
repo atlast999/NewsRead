@@ -27,7 +27,6 @@ val dataModule = module {
         newsDao = get(),
         newsNetworkDataSource = get(),
         applicationScope = get(),
-        ioDispatcher = get(qualifier = AppDispatchers.IO.qualifier),
         fileDownloader = get(),
     ) }
 }

@@ -14,10 +14,12 @@ class AndroidFileDownloader(context: Context): FileDownloader {
     override suspend fun downloadFile(url: String) {
         val uri = Uri.parse(url)
         val request = DownloadManager.Request(uri)
-            .setTitle("Download Title") // Set the title for the notification
             .setDescription("Downloading file...") // Set the description for the notification
             .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED) // Show notification
-            .setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, "newsread/${url.substringAfterLast("/")}") // Save to the public Downloads folder
+            .setDestinationInExternalPublicDir(
+                Environment.DIRECTORY_DOWNLOADS,
+                url.substringAfterLast("/")
+            ) // Save to the public Downloads folder
         downloadManager.enqueue(request)
     }
 

@@ -85,7 +85,7 @@ private fun NewsReadUI(
             modifier = Modifier
                 .align(Alignment.CenterEnd)
                 .padding(end = 16.dp),
-            summary = state.newsSummary,
+            summaryState = state.newsSummaryState,
             onRequestSummary = onRequestSummary,
         )
     }
@@ -195,18 +195,18 @@ private fun MediaDownloadFab(
 @Composable
 private fun AiSummaryFab(
     modifier: Modifier,
-    summary: String?,
+    summaryState: NewsSummaryState,
     onRequestSummary: () -> Unit,
 ) {
     val expanded = remember { mutableStateOf(false) }
-    LaunchedEffect(expanded.value, summary) {
-        if (expanded.value && summary == null) {
+    LaunchedEffect(expanded.value, summaryState.summary) {
+        if (expanded.value && summaryState.summary == null) {
             onRequestSummary.invoke()
         }
     }
     if (expanded.value) {
         SummaryDialog(
-            summary = summary,
+            summaryState = summaryState,
             onDismissRequest = { expanded.value = false }
         )
     }
@@ -223,7 +223,7 @@ private fun AiSummaryFab(
 
 @Composable
 fun SummaryDialog(
-    summary: String?,
+    summaryState: NewsSummaryState,
     onDismissRequest: () -> Unit,
 ) {
     Dialog(onDismissRequest = onDismissRequest) {
@@ -241,28 +241,42 @@ fun SummaryDialog(
                 contentColor = MaterialTheme.colorScheme.onPrimary,
             )
         ) {
-            if (summary == null) {
-                Text(
-                    text = "Summarizing news...",
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 16.dp),
-                    textAlign = TextAlign.Center,
-                    style = MaterialTheme.typography.titleMedium,
-                    color = MaterialTheme.colorScheme.onPrimary,
-                )
-                Spacer(modifier = Modifier.height(20.dp))
-                CircularProgressIndicator(
-                    modifier = Modifier.align(Alignment.CenterHorizontally),
-                    color = MaterialTheme.colorScheme.onPrimary,
-                )
-            } else {
-                Text(
-                    modifier = Modifier.padding(all = 16.dp),
-                    text = summary,
-                    style = MaterialTheme.typography.titleMedium,
-                    color = MaterialTheme.colorScheme.onPrimary,
-                )
+            when {
+                summaryState.summary != null -> {
+                    Text(
+                        modifier = Modifier.padding(all = 16.dp),
+                        text = summaryState.summary,
+                        style = MaterialTheme.typography.titleMedium,
+                        color = MaterialTheme.colorScheme.onPrimary,
+                    )
+                }
+                summaryState.error != null -> {
+                    Text(
+                        text = summaryState.error,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 16.dp),
+                        textAlign = TextAlign.Center,
+                        style = MaterialTheme.typography.titleMedium,
+                        color = MaterialTheme.colorScheme.error,
+                    )
+                }
+                else -> {
+                    Text(
+                        text = "Summarizing news...",
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 16.dp),
+                        textAlign = TextAlign.Center,
+                        style = MaterialTheme.typography.titleMedium,
+                        color = MaterialTheme.colorScheme.onPrimary,
+                    )
+                    Spacer(modifier = Modifier.height(20.dp))
+                    CircularProgressIndicator(
+                        modifier = Modifier.align(Alignment.CenterHorizontally),
+                        color = MaterialTheme.colorScheme.onPrimary,
+                    )
+                }
             }
         }
     }
