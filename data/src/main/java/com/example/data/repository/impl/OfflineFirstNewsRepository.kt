@@ -3,6 +3,7 @@ package com.example.data.repository.impl
 import android.util.Log
 import com.example.data.datasource.database.dao.NewsDao
 import com.example.data.datasource.database.entity.NewsEntity
+import com.example.data.datasource.database.entity.NewsSummaryEntity
 import com.example.data.datasource.database.entity.asNews
 import com.example.data.datasource.downloader.FileDownloader
 import com.example.data.datasource.network.NewsNetworkDataSource
@@ -25,7 +26,7 @@ class OfflineFirstNewsRepository(
     private val applicationScope: CoroutineScope,
     private val ioDispatcher: CoroutineDispatcher,
     private val fileDownloader: FileDownloader,
-): NewsRepository {
+) : NewsRepository {
 
     private var syncJob: Job? = null
     private val syncedCategories = mutableSetOf<NewsCategory>()
@@ -42,6 +43,20 @@ class OfflineFirstNewsRepository(
 
     override suspend fun downloadNewsMedia(url: String) {
         fileDownloader.downloadFile(url = url)
+    }
+
+    override suspend fun summarizeNews(news: News): String {
+        val cachedSummary = newsDao.getNewsSummary(newsUrl = news.url).firstOrNull()?.summary
+        if (cachedSummary != null) return cachedSummary
+        val networkSummary = newsNetworkDataSource.summarizeNews(news = news).summary
+        newsDao.insertNewsSummary(
+            newsSummaryEntity = NewsSummaryEntity(
+                url = news.url,
+                summary = networkSummary,
+            )
+        )
+        return newsDao.getNewsSummary(newsUrl = news.url).firstOrNull()?.summary
+            ?: throw IllegalStateException("No summary found")
     }
 
     private fun syncNewsByCategory(category: NewsCategory) = applicationScope.launch(ioDispatcher) {

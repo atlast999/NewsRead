@@ -6,9 +6,10 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.example.data.datasource.database.dao.NewsDao
 import com.example.data.datasource.database.entity.NewsEntity
+import com.example.data.datasource.database.entity.NewsSummaryEntity
 
 @Database(
-    entities = [NewsEntity::class],
+    entities = [NewsEntity::class, NewsSummaryEntity::class],
     version = 1,
     exportSchema = false,
 )

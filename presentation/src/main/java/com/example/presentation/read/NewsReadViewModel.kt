@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.data.model.News
 import com.example.data.repository.NewsRepository
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -28,11 +29,20 @@ class NewsReadViewModel(
     fun downloadMedia(mediaUrl: MediaUrl) = viewModelScope.launch {
         newsRepository.downloadNewsMedia(url = mediaUrl.url)
     }
+
+    fun summarizeNews() = viewModelScope.launch {
+        _uiState.update {
+            it.copy(
+                newsSummary = newsRepository.summarizeNews(news = news)
+            )
+        }
+    }
 }
 
 data class NewsReadState(
     val news: News,
     val downloadableMedias: Set<MediaUrl> = emptySet(),
+    val newsSummary: String? = null,
 )
 
 @JvmInline

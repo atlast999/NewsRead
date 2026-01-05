@@ -16,3 +16,8 @@ data class NewsDto(
     @SerialName("thumbnail") val thumbnail: String,
     @SerialName("url") val url: String,
 )
+
+@Serializable
+data class SummarizeNewsResponse(
+    @SerialName("summary") val summary: String
+)

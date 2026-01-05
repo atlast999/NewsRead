@@ -20,10 +20,8 @@ fun NewsEntity.asNews() = News(
     url = url,
 )
 
-fun News.asEntity(categoryId: Int) = NewsEntity(
-    title = title,
-    summary = summary,
-    thumbnail = thumbnail,
-    categoryId = categoryId,
-    url = url,
+@Entity(tableName = "news_summary")
+data class NewsSummaryEntity(
+    @PrimaryKey val url: String,
+    val summary: String,
 )
