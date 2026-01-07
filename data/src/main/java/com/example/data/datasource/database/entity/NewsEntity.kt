@@ -1,16 +1,17 @@
 package com.example.data.datasource.database.entity
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.example.data.model.News
 
 @Entity(tableName = "news")
 data class NewsEntity(
-    val title: String,
-    val summary: String?,
-    val thumbnail: String,
-    val categoryId: Int,
-    @PrimaryKey val url: String,
+    @ColumnInfo(name = "title") val title: String,
+    @ColumnInfo(name = "summary") val summary: String?,
+    @ColumnInfo(name = "thumbnail") val thumbnail: String,
+    @ColumnInfo(name = "categoryId") val categoryId: Int,
+    @ColumnInfo(name = "url") @PrimaryKey val url: String,
 )
 
 fun NewsEntity.asNews() = News(
@@ -22,6 +23,6 @@ fun NewsEntity.asNews() = News(
 
 @Entity(tableName = "news_summary")
 data class NewsSummaryEntity(
-    @PrimaryKey val url: String,
-    val summary: String,
+    @ColumnInfo(name = "url") @PrimaryKey val url: String,
+    @ColumnInfo(name = "summary") val summary: String,
 )

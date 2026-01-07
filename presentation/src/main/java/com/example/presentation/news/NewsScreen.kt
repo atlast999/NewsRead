@@ -28,6 +28,8 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.tooling.preview.Preview
+import com.example.presentation.theme.NewsReadTheme
 import kotlinx.coroutines.launch
 
 @Composable
@@ -213,4 +215,51 @@ private fun RelevantNewsItem(
             )
         },
     )
+}
+
+@Composable
+@Preview
+private fun CategoryScreenPreview() {
+    NewsReadTheme {
+        Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+            Box(
+                modifier = Modifier
+                    .padding(innerPadding)
+            ) {
+                NewsUI(
+                    modifier = Modifier.fillMaxSize(),
+                    state = NewsState(
+                        isOnline = true,
+                        isLoading = false,
+                        latestNews = buildList {
+                            repeat(3) {
+                                add(
+                                    News(
+                                        url = "https://www.google.com$it",
+                                        title = "Quán quân Giọng hát Việt nhí lên tiếng sau ồn ào về phong cách trình diễn",
+                                        summary = "Trước những ý kiến trái chiều về phong cách trình diễn, Quán quân \"Giọng hát Việt nhí 2018\" Hà Quỳnh Như đã lên tiếng và chia sẻ về hành trình thay đổi bản thân.",
+                                        thumbnail = "https://www.google.com/images/",
+                                    )
+                                )
+                            }
+                        },
+                        relevantNews = buildList {
+                            repeat(4) {
+                                add(
+                                    News(
+                                        url = "https://www.google.com${it + 3}",
+                                        title = "Quán quân Giọng hát Việt nhí lên tiếng sau ồn ào về phong cách trình diễn",
+                                        summary = "Trước những ý kiến trái chiều về phong cách trình diễn, Quán quân \"Giọng hát Việt nhí 2018\" Hà Quỳnh Như đã lên tiếng và chia sẻ về hành trình thay đổi bản thân.",
+                                        thumbnail = "https://www.google.com/images/",
+                                    )
+                                )
+                            }
+                        },
+                    ),
+                    snackBarHostState = remember { SnackbarHostState() },
+                    onNewsSelected = {},
+                )
+            }
+        }
+    }
 }

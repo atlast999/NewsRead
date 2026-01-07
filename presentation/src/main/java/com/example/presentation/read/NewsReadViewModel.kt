@@ -40,6 +40,7 @@ class NewsReadViewModel(
     )
 
     fun onMediaFileDetected(url: String) {
+        if (url.isBlank()) return
         _downloadableMedias.update {
             it + MediaUrl(url)
         }

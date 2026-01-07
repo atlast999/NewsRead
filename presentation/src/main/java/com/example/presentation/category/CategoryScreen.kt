@@ -4,6 +4,7 @@ import androidx.annotation.DrawableRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -12,15 +13,18 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.data.model.NewsCategory
 import com.example.presentation.R
+import com.example.presentation.theme.NewsReadTheme
 
 @Composable
 fun CategoryScreen(onCategorySelected: (NewsCategory) -> Unit) {
@@ -70,8 +74,23 @@ fun CategoryScreen(onCategorySelected: (NewsCategory) -> Unit) {
     }
 }
 
+@Composable
+@Preview
+private fun CategoryScreenPreview() {
+    NewsReadTheme {
+        Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+            Box(
+                modifier = Modifier
+                    .padding(innerPadding)
+            ) {
+                CategoryScreen(onCategorySelected = {})
+            }
+        }
+    }
+}
+
 @DrawableRes
-private fun NewsCategory.getIcon() = when(this) {
+private fun NewsCategory.getIcon() = when (this) {
     NewsCategory.INTERNATIONAL -> R.drawable.globe
     NewsCategory.TRAVEL -> R.drawable.travel
     NewsCategory.SPORTS -> R.drawable.sports

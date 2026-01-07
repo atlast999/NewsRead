@@ -31,6 +31,7 @@ import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -39,15 +40,18 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.TransformOrigin
+import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.data.model.News
 import com.example.presentation.R
+import com.example.presentation.theme.NewsReadTheme
 
 @Composable
 fun NewsReadScreen(viewModel: NewsReadViewModel) {
@@ -99,6 +103,16 @@ private fun NewsReadArea(
     news: News,
     onMediaFileDetected: (String) -> Unit,
 ) {
+    //preview purpose
+    if (LocalInspectionMode.current) {
+        Box(
+            modifier = modifier,
+            contentAlignment = Alignment.Center,
+        ) {
+            Text(text = "WebView placeholder")
+        }
+        return
+    }
     AndroidView(
         modifier = modifier,
         factory = { context ->
@@ -282,6 +296,34 @@ private fun SummaryDialog(
                         color = MaterialTheme.colorScheme.onPrimary,
                     )
                 }
+            }
+        }
+    }
+}
+
+@Composable
+@Preview
+private fun CategoryScreenPreview() {
+    NewsReadTheme {
+        Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+            Box(
+                modifier = Modifier
+                    .padding(innerPadding)
+            ) {
+                NewsReadUI(
+                    modifier = Modifier.fillMaxSize(),
+                    state = NewsReadState(
+                        news = News(
+                            url = "https://www.google.com",
+                            title = "Google",
+                            summary = "Google Summary",
+                            thumbnail = "https://www.google.com/images/",
+                        )
+                    ),
+                    onMediaFileDetected = {},
+                    onDownloadMedia = {},
+                    onRequestSummary = {},
+                )
             }
         }
     }
