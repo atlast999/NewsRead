@@ -12,8 +12,8 @@
 *   **Content Summary**: Requests and displays a summarized version of news content from a server-less backend, powered by AI.
 
 ### App Captured Preview
-![News Category](docs/category.png){width=20%}
 <img src="docs/category.png" width="50%" />
+
 ![News List](docs/list.png)
 ![News Read](docs/read.png)
 ![Media Download](docs/media.png)
