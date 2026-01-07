@@ -1,6 +1,5 @@
 package com.example.data.datasource.network.dto
 
-import com.example.data.model.News
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 

@@ -50,9 +50,9 @@ class NewsReadViewModel(
     }
 
     fun summarizeNews() = viewModelScope.launch(
-        CoroutineExceptionHandler { _, _ ->
+        CoroutineExceptionHandler { _, throwable ->
             _summaryErrorMessage.update {
-                "Unable to summarize news."
+                throwable.message ?:"Unknown error"
             }
         }
     ) {

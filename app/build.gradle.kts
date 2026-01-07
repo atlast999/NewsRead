@@ -40,6 +40,7 @@ android {
 dependencies {
     implementation(projects.presentation)
     implementation(projects.data)
+
     implementation(platform(libs.koin.bom))
     implementation(libs.koin.android)
 

@@ -251,17 +251,21 @@ private fun SummaryDialog(
                         color = MaterialTheme.colorScheme.onPrimary,
                     )
                 }
+
                 summaryState.error != null -> {
-                    Text(
-                        text = summaryState.error,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(top = 16.dp),
-                        textAlign = TextAlign.Center,
-                        style = MaterialTheme.typography.titleMedium,
-                        color = MaterialTheme.colorScheme.error,
-                    )
+                    Box(modifier = Modifier.weight(1f)) {
+                        Text(
+                            text = summaryState.error,
+                            modifier = Modifier
+                                .padding(all = 16.dp)
+                                .align(Alignment.Center),
+                            textAlign = TextAlign.Center,
+                            style = MaterialTheme.typography.titleLarge,
+                            color = MaterialTheme.colorScheme.error,
+                        )
+                    }
                 }
+
                 else -> {
                     Text(
                         text = "Summarizing news...",

@@ -3,6 +3,7 @@ package com.example.presentation.news
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -16,11 +17,18 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
 import com.example.data.model.News
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import kotlinx.coroutines.launch
 
 @Composable
 fun NewsScreen(
@@ -28,10 +36,25 @@ fun NewsScreen(
     onNewsSelected: (News) -> Unit,
 ) {
     val uiState = viewModel.newsState.collectAsStateWithLifecycle()
+    val snackBarHostState = remember { SnackbarHostState() }
+    val scope = rememberCoroutineScope()
+
     NewsUI(
         modifier = Modifier.fillMaxSize(),
         state = uiState.value,
-        onNewsSelected = onNewsSelected,
+        snackBarHostState = snackBarHostState,
+        onNewsSelected = {
+            if (uiState.value.isOnline) {
+                onNewsSelected.invoke(it)
+            } else {
+                scope.launch {
+                    snackBarHostState.showSnackbar(
+                        message = "No Internet To Read News",
+                        withDismissAction = true
+                    )
+                }
+            }
+        },
     )
 }
 
@@ -39,27 +62,41 @@ fun NewsScreen(
 private fun NewsUI(
     modifier: Modifier = Modifier,
     state: NewsState,
+    snackBarHostState: SnackbarHostState,
     onNewsSelected: (News) -> Unit,
 ) {
-    when {
-        state.isLoading -> {
-            Box(modifier = modifier) {
-                CircularProgressIndicator(
-                    modifier = Modifier.align(Alignment.Center),
+    Scaffold(
+        snackbarHost = { SnackbarHost(snackBarHostState) },
+        contentWindowInsets = WindowInsets(),
+    ) { paddingValues ->
+        Box(modifier = modifier.padding(paddingValues)) {
+            when {
+                state.isLoading -> {
+                    CircularProgressIndicator(
+                        modifier = Modifier.align(Alignment.Center),
+                    )
+                }
+
+                state.errorMessage != null -> {
+                    Text(
+                        text = state.errorMessage,
+                        modifier = Modifier
+                            .align(Alignment.Center)
+                            .padding(all = 16.dp),
+                        textAlign = TextAlign.Center,
+                        style = MaterialTheme.typography.titleLarge,
+                        color = MaterialTheme.colorScheme.error,
+                    )
+                }
+
+                else -> NewsList(
+                    modifier = Modifier.fillMaxSize(), // Fill the entire Scaffold content area
+                    latestNews = state.latestNews,
+                    relevantNews = state.relevantNews,
+                    onNewsSelected = onNewsSelected,
                 )
             }
         }
-
-        state.errorMessage != null -> {
-            //Show error message
-        }
-
-        else -> NewsList(
-            modifier = modifier,
-            latestNews = state.latestNews,
-            relevantNews = state.relevantNews,
-            onNewsSelected = onNewsSelected,
-        )
     }
 }
 
