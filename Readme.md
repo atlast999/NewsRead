@@ -13,11 +13,12 @@
 
 ### App Captured Preview
 ![News Category](docs/category.png){width=20%}
-![News List](docs/list.png){width=50%}
-![News Read](docs/read.png){width=50%}
-![Media Download](docs/media.png){width=50%}
-![Content Summary](docs/ai.png){width=50%}
-![Large Screen](docs/large.png){width=50%}
+<img src="docs/category.png" width="50%" />
+![News List](docs/list.png)
+![News Read](docs/read.png)
+![Media Download](docs/media.png)
+![Content Summary](docs/ai.png)
+![Large Screen](docs/large.png)
 
 ## Technology Stack
 
