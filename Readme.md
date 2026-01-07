@@ -12,12 +12,12 @@
 *   **Content Summary**: Requests and displays a summarized version of news content from a server-less backend, powered by AI.
 
 ### App Captured Preview
-![News Category](docs/category.png)
-![News List](docs/list.png)
-![News Read](docs/read.png)
-![Media Download](docs/media.png)
-![Content Summary](docs/ai.png)
-![Large Screen](docs/large.png)
+![News Category](docs/category.png){width=50%}
+![News List](docs/list.png){width=50%}
+![News Read](docs/read.png){width=50%}
+![Media Download](docs/media.png){width=50%}
+![Content Summary](docs/ai.png){width=50%}
+![Large Screen](docs/large.png){width=50%}
 
 ## Technology Stack
 
@@ -40,6 +40,7 @@ The backend functionalities, including news fetching and content summarization, 
 The project adopts a multi-module architecture, designed for clear separation of concerns, improved maintainability, and enhanced testability. While not strictly adhering to a single architectural pattern, it selectively adjusts to match the application's complexity.
 
 **Architecture Diagram**:
+
 ![App Architecture](docs/app_architecture.png)
 
 ### Modules
@@ -55,6 +56,6 @@ The project adopts a multi-module architecture, designed for clear separation of
     *   **Responsibility**: The main application module.
     *   **Functionality**: Integrates the `data` and `presentation` modules, sets up dependency injection (Koin), and handles application-level configurations.
 
-## Known Issues and Future Enhancements
+## Issues
 *   **Data Provider**: The current setup lacks a fully provided backend. I need to implement my own backend services for news fetching and summarization.
 *   **Library Version Mismatch**: Resolving dependency conflicts, especially when integrating the latest library versions, is time-consuming. Efforts are made to keep dependencies up-to-date while maintaining compatibility.
