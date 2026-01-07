@@ -1,5 +1,6 @@
 package com.example.presentation.read
 
+import android.annotation.SuppressLint
 import android.util.Log
 import android.webkit.WebChromeClient
 import android.webkit.WebView
@@ -91,6 +92,7 @@ private fun NewsReadUI(
     }
 }
 
+@SuppressLint("SetJavaScriptEnabled")
 @Composable
 private fun NewsReadArea(
     modifier: Modifier = Modifier,
@@ -104,7 +106,6 @@ private fun NewsReadArea(
                 settings.apply {
                     javaScriptEnabled = true
                     domStorageEnabled = true
-                    mediaPlaybackRequiresUserGesture = false
                 }
                 webViewClient = object : WebViewClient() {
 
@@ -222,7 +223,7 @@ private fun AiSummaryFab(
 }
 
 @Composable
-fun SummaryDialog(
+private fun SummaryDialog(
     summaryState: NewsSummaryState,
     onDismissRequest: () -> Unit,
 ) {
